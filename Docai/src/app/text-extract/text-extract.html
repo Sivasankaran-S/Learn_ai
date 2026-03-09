@@ -1,0 +1,186 @@
+
+<div class="min-h-screen bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center">
+    <p-toast />
+  <p-card class="w-full">
+<div class="flex flex-wrap justify-center gap-2 mb-4">
+    <p-select [options]="documentList" [(ngModel)]="selectedDocumentList" optionLabel="name" placeholder="--select--" [showClear]="true" [checkmark]="true" class="w-full md:w-56" />
+     <p-fileupload
+                                                    #fu
+                                                    mode="basic"
+                                                    chooseLabel="Choose"
+                                                    chooseIcon="pi pi-upload"
+                                                    name="demo[]"
+                                                    accept=".pdf,.doc,.docx,.jpg,.png,.jpeg"
+                                                    customUpload="true"
+                                                    (uploadHandler)="OnUpload($event, fu)"
+                                                >
+                                                </p-fileupload>
+                                                <p-button label="Cancel" (onClick)="fu.clear()" severity="secondary"></p-button>
+                                                <p-button label="Upload" (onClick)="fu.upload()" severity="secondary"> </p-button>
+                                             </div> 
+                            <p-card class="w-full" *ngIf="showExtractedData">
+                                <div class="flex flex-wrap justify-center gap-4 mb-6">
+                                    <h1>Extracted Data:</h1>
+                                    <div class="summary-box" [innerHTML]="ocrText"></div>
+                                </div>
+                                <div class="flex flex-wrap justify-center gap-4 mb-6">
+                                     <p-select [options]="option" [(ngModel)]="selectedOption" optionLabel="name" placeholder="what your need" [checkmark]="true" class="w-full md:w-56" (onChange)="viewOption()" />
+                                </div>
+                            </p-card>
+<!--      FROM FILLER                -->
+<p-card class="w-full" header="Form-Filler" *ngIf="showData">
+<div class="flex flex-wrap justify-center gap-4 mb-4" *ngIf ="show_pan">
+        <div class="col-6">
+            <b>Name:</b>{{extractedData.NAME}}
+        </div>
+         <div class="col-6">
+            <b>Date Of Birth:</b>{{extractedData.DATE_OF_BIRTH}}
+        </div>
+         <div class="col-6">
+            <b>Pan Number:</b>{{extractedData.PAN_NUMBER || 'NOT DETECTED'}}
+        </div>
+    </div>
+    <div class="flex flex-wrap justify-center gap-4 mb-4" *ngIf ="show_aadhaar">
+        <div class="col-6">
+            <b>Name:</b>{{extractedData.NAME}}
+        </div>
+         <div class="col-6">
+            <b>Date Of Birth:</b>{{extractedData.DATE_OF_BIRTH}}
+        </div>
+         <div class="col-6">
+            <b>Aadhaar Number:</b>{{extractedData.AADHAAR_NUMBER || 'NOT DETECTED'}}
+        </div>
+        <div class="col-6">
+            <b>Gender:</b>{{extractedData.GENDER }}
+        </div>
+        <div class="col-6">
+            <b>Address:</b>{{extractedData.ADDRESS }}
+        </div>
+    </div>
+    <div class="flex flex-wrap justify-center gap-4 mb-4" *ngIf ="show_voterid">
+        <div class="col-6">
+            <b>Name:</b>{{extractedData.NAME}}
+        </div>
+         <div class="col-6">
+            <b>Date Of Birth:</b>{{extractedData.DATE_OF_BIRTH}}
+        </div>
+         <div class="col-6">
+            <b>EPIC Number:</b>{{extractedData.VOTERID_NUMBER || 'NOT DETECTED'}}
+        </div>
+        <div class="col-6">
+            <b>Gender:</b>{{extractedData.GENDER }}
+        </div>
+    </div>
+     <div class="flex flex-wrap justify-center gap-4 mb-4" *ngIf ="show_Driving_licence">
+        <div class="col-6">
+            <b>Name:</b>{{extractedData.NAME}}
+        </div>
+         <div class="col-6">
+            <b>Date Of Birth:</b>{{extractedData.DATE_OF_BIRTH}}
+        </div>
+         <div class="col-6">
+            <b>Driving Licence Number:</b>{{extractedData.Driving_Licence_id || 'NOT DETECTED'}}
+        </div>
+        
+    </div>
+  </p-card>
+  <p-card header="CHAT-BOT" class="chat-card" *ngIf="showChat">
+    <div class="chat-window">
+        <div class="chat-messages" *ngFor="let msg of messages" [ngClass]="msg.sender">
+             <span *ngIf="msg.sender === 'user'">
+    {{ msg.text }}
+  </span>
+
+  <span *ngIf="msg.sender === 'bot'"
+        [innerHTML]="msg.text">
+  </span>
+           
+        </div>
+    </div>
+    <div class="chat-input">
+         <input
+      pInputText
+      [(ngModel)]="userMessages"
+      placeholder="Type a message..."
+      (keyup.enter)="sendMessages()"
+      class="w-full" />
+
+    <p-button
+      icon="pi pi-send"
+      (onClick)="sendMessages()">
+    </p-button>  
+    </div>
+  </p-card>
+   <p-button *ngIf="showData" label="clear" (onClick)="clear_data()" severity="secondary"> </p-button>
+  </p-card>
+  
+</div>
+
+<!-- <div class="min-h-screen bg-gradient-to-br from-blue-600 to-purple-700 flex flex-column items-center justify-center p-4">
+    <p-toast />
+
+    <p-card class="w-full md:w-8" styleClass="mb-4">
+        <div class="flex justify-center gap-2">
+            <p-fileupload #fu mode="basic" chooseLabel="Choose File" chooseIcon="pi pi-upload" 
+                accept=".pdf,.doc,.docx,.jpg,.png" customUpload="true" 
+                (uploadHandler)="OnUpload($event, fu)">
+            </p-fileupload>
+            <p-button label="Process File" (onClick)="fu.upload()" icon="pi pi-cog" severity="primary"></p-button>
+        </div>
+    </p-card>
+
+    <div class="w-full md:w-8" *ngIf="extractedData">
+        <p-card header="Extracted Identity Details" styleClass="shadow-lg">
+            
+            <p-table [value]="[extractedData]" class="w-full">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Field Name</th>
+                        <th>Extracted Value</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-data>
+                    <tr>
+                        <td><b>Full Name</b></td>
+                        <td>{{data.NAME}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Date of Birth</b></td>
+                        <td>{{data.DATE_OF_BIRTH}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>PAN Number</b></td>
+                        <td>
+                            <span [class]="data.PAN_NUMBER ? '' : 'text-red-500 font-bold'">
+                                {{data.PAN_NUMBER || 'NOT DETECTED'}}
+                            </span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+            <p-divider align="left">
+                <div class="inline-flex align-items-center">
+                    <i class="pi pi-list mr-2"></i>
+                    <b>Raw OCR Text</b>
+                </div>
+            </p-divider>
+
+            <p-table [value]="ocrText" [scrollable]="true" scrollHeight="200px" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Line #</th>
+                        <th>Detected Text</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-text let-i="rowIndex">
+                    <tr>
+                        <td style="width: 20%">{{ i + 1 }}</td>
+                        <td>{{ text }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+        </p-card>
+    </div>
+</div> -->
