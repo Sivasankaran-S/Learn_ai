@@ -2,7 +2,13 @@ import json
 from langchain_ollama import ChatOllama
 from langchain_core.prompts import PromptTemplate
 import re
-
+from Services.prompts import (
+    PAN_PROMPT,
+    AADHAAR_PROMPT,
+    VOTERID_PROMPT,
+    DRIVING_PROMPT,
+    BANK_PROMPT,
+)
 #llm model 
 llm = ChatOllama(model="gemma3:1b")
 
@@ -384,7 +390,7 @@ def extract_details(ocr_txt:str,doc:str):
             "Summarize":summarize_result.content
         }
     elif document_type == "AADHAAR":
-        ocr_txt = ocr_txt.splitlines()
+        #ocr_txt = ocr_txt.splitlines()
         text = "\n".join(ocr_txt).upper()
 
         aadhaar_no = None
