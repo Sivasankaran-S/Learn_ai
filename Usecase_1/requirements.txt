@@ -4,3 +4,4 @@ uvicorn
 ollama
 python-multipart
 pytesseract
+duckduckgo-search
